@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f14" />
+  <meta name="description" content="Mini app de treino offline (A–F) com cardio fixo. Mobile-first." />
+
+  <!-- iOS: permitir "Adicionar à Tela de Início" -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Treino OFFLINE" />
+
+  <!-- Ícone iOS (coloque esse arquivo na raiz também) -->
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <title>Treino OFFLINE</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="header-top">
+      <div>
+        <h1>Treino OFFLINE</h1>
+        <p class="subtitle">A–F + Cardio fixo • Mobile-first • 100% offline</p>
+      </div>
+
+      <button id="btnResetAll" class="btn btn-ghost" type="button" title="Apaga marcações e edições">
+        Reset
+      </button>
+    </div>
+
+    <nav class="day-nav" aria-label="Navegação por dias da semana">
+      <!-- Botões renderizados via JS -->
+      <div id="dayTabs" class="day-tabs"></div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Resumo do dia -->
+    <section class="card card-hero" id="dayHero" aria-live="polite">
+      <!-- Renderizado via JS -->
+    </section>
+
+    <!-- Cardio fixo -->
+    <section class="card" id="cardioCard">
+      <div class="card-header">
+        <h2>Cardio (fixo)</h2>
+        <p class="muted">Faça em jejum (AEJ), após o treino ou longe do treino.</p>
+      </div>
+
+      <div class="card-body">
+        <ul class="bullets">
+          <li><strong>Duração:</strong> 30–40 min</li>
+          <li><strong>Intensidade:</strong> moderada (120–130 BPM)</li>
+          <li><strong>Opções:</strong> esteira, rua, bike, escada (simulador) ou elíptico</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Musculação do dia -->
+    <section class="card" id="workoutCard">
+      <div class="card-header">
+        <div class="card-header-row">
+          <h2 id="workoutTitle">Musculação</h2>
+
+          <label class="toggle">
+            <input id="doneToggle" type="checkbox" />
+            <span class="toggle-ui"></span>
+            <span class="toggle-label">Concluído</span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="btnEdit" class="btn" type="button">Editar</button>
+          <button id="btnSave" class="btn btn-primary" type="button" disabled>Salvar</button>
+          <button id="btnCancel" class="btn btn-ghost" type="button" disabled>Cancelar</button>
+        </div>
+
+        <p class="muted small" id="editHint">
+          Dica: clique em "Editar" para ajustar exercícios/séries/reps/descanso e depois "Salvar".
+        </p>
+      </div>
+
+      <div class="card-body">
+        <!-- Tabela (modo leitura) -->
+        <div id="tableWrap" class="table-wrap" role="region" aria-label="Exercícios do treino">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Exercício</th>
+                <th class="col-small">Séries</th>
+                <th>Repetições</th>
+                <th class="col-small">Descanso</th>
+              </tr>
+            </thead>
+            <tbody id="workoutTbody">
+              <!-- Renderizado via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Editor (modo edição) -->
+        <div id="editor" class="editor hidden" aria-label="Editor de treino">
+          <p class="muted small">
+            Edite abaixo no formato JSON simples. É offline; tudo fica salvo no seu celular (localStorage).
+          </p>
+
+          <textarea id="editorTextarea" spellcheck="false"></textarea>
+
+          <div class="note">
+            <strong>Formato:</strong> lista de itens com <code>name</code>, <code>sets</code>, <code>reps</code>, <code>rest</code>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rodapé com instruções -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Como usar offline e salvar como "app"</h2>
+      </div>
+      <div class="card-body">
+        <ol class="steps">
+          <li>Publique estes arquivos em um servidor (GitHub Pages, Vercel, etc.).</li>
+          <li>No iPhone, abra o endereço no Safari.</li>
+          <li>Toque em compartilhar → <strong>Adicionar à Tela de Início</strong>.</li>
+          <li>Depois de adicionado, abra pelo ícone: funciona <strong>offline</strong> e guarda suas edições.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p class="muted small">
+      Treinos A–F e cardio conforme ficha fornecida. Estrutura editável.
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <!-- Registro do service worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(err => {
+          console.error("SW falhou:", err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
